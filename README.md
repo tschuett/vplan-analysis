@@ -1,5 +1,11 @@
 # vplan-analysis
 
+# Precedence
+
+* VPDominatorTree
+
+# New
+
 * VPDomTree
 * VPLoopInfo
 
