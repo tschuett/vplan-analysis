@@ -5,14 +5,15 @@
 #include <llvm/ADT/DepthFirstIterator.h>
 #include <llvm/ADT/GraphTraits.h>
 #include <llvm/ADT/SmallVector.h>
+#include <llvm/ADT/iterator.h>
 #include <llvm/Support/Casting.h>
 #include <llvm/Support/ErrorHandling.h>
 
 template <typename BlockPtrTy>
 class VPAllSuccessorsIterator
-: public llvm::iterator_facade_base<VPAllSuccessorsIterator<BlockPtrTy>,
-                                  std::bidirectional_iterator_tag,
-                                  VPBlockBase> {
+    : public llvm::iterator_facade_base<VPAllSuccessorsIterator<BlockPtrTy>,
+                                        std::bidirectional_iterator_tag,
+                                        VPBlockBase> {
   BlockPtrTy Block;
   /// Index of the current successor. For VPBasicBlock nodes, this simply is the
   /// index for the successor array. For VPRegionBlock, SuccessorIdx == 0 is
@@ -118,7 +119,6 @@ template <> struct llvm::GraphTraits<const VPBlockBase *> {
     return ChildIteratorType::end(N);
   }
 };
-
 
 /// Inverse graph traits are not implemented yet.
 /// TODO: Implement a version of VPBlockNonRecursiveTraversalWrapper to traverse

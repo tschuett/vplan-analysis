@@ -33,7 +33,7 @@ public:
   /// for any other purpose, as the values may change as LLVM evolves.
   BlockKind getVPBlockID() const { return SubclassID; }
 
-  VPlan *getPlan() const;
+  VPlan *getPlan() const { return Plan; }
   VPRegionBlock *getParent() const { return Parent; }
 
   const std::string &getName() const { return Name; }

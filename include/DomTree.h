@@ -2,15 +2,14 @@
 
 #include "Block.h"
 #include "Plan.h"
+#include "Traits.h"
 
 #include <llvm/ADT/DepthFirstIterator.h>
 #include <llvm/ADT/GraphTraits.h>
 #include <llvm/IR/Dominators.h>
 #include <llvm/Support/GenericDomTree.h>
 
-using VPDomTreeNode = llvm::DomTreeNodeBase<VPBlockBase>;
-using VPDomTree = llvm::DomTreeBase<VPBlockBase>;
-
+class VPDomTreeNode : public llvm::DomTreeNodeBase<VPBlockBase> {};
 
 template <> struct llvm::DomTreeNodeTraits<VPBlockBase> {
   using NodeType = VPBlockBase;
@@ -21,24 +20,26 @@ template <> struct llvm::DomTreeNodeTraits<VPBlockBase> {
   static ParentPtr getParent(NodePtr B) { return B->getPlan(); }
 };
 
-//class VPDomTree : public llvm::DominatorTreeBase<VPBlockBase, false> {
-//public:
-//  using Base = llvm::DominatorTreeBase<VPBlockBase, false>;
-//
-//  VPDomTree() = default;
-//  explicit VPDomTree(VPlan &p) { recalculate(p); }
-//
-//  // Ensure base-class overloads are visible.
-//  using Base::dominates;
-//};
+class VPDomTree : public llvm::DominatorTreeBase<VPBlockBase, false> {
+public:
+  using Base = llvm::DominatorTreeBase<VPBlockBase, false>;
+
+  VPDomTree() = default;
+  explicit VPDomTree(VPlan &p) { recalculate(p); }
+
+  // Ensure base-class overloads are visible.
+  using Base::dominates;
+
+  friend llvm::DomTreeBuilder::SemiNCAInfo<VPDomTree>;
+};
 
 namespace llvm::DomTreeBuilder {
 
-extern template void Calculate<VPDomTree>(VPDomTree &DT);
+// extern template void Calculate<VPDomTree>(VPDomTree &DT);
 
-//extern template void
-//CalculateWithUpdates<VPDomTree>(VPDomTree &DT,
-//                                llvm::ArrayRef<VPDomTree::UpdateType> U);
+// extern template void
+// CalculateWithUpdates<VPDomTree>(VPDomTree &DT,
+//                                 llvm::ArrayRef<VPDomTree::UpdateType> U);
 
 } // namespace llvm::DomTreeBuilder
 
